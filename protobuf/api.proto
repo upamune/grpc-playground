@@ -1,0 +1,13 @@
+syntax = "proto3";
+option go_package = "grpc-playground";
+package grpc_playground;
+
+message PingRequest {
+}
+
+message PingResponse {
+}
+
+service GrpcPlayground {
+  rpc Ping(PingRequest) returns (PingResponse) {}
+}
