@@ -37,9 +37,7 @@ func main() {
 	grpcServer := grpc.NewServer(opts...)
 	pb.RegisterGrpcPlaygroundServer(grpcServer, &GrpcPlaygroundService{})
 
-	const port = ":8080"
-
-	ln, err := net.Listen("tcp", port)
+	ln, err := net.Listen("tcp", ":0")
 	if err != nil {
 		fmt.Fprint(os.Stderr, err.Error())
 		os.Exit(1)
@@ -51,8 +49,9 @@ func main() {
 			os.Exit(1)
 		}
 	}()
+	defer grpcServer.Stop()
 
-	conn, err := grpc.Dial(port, grpc.WithInsecure())
+	conn, err := grpc.Dial(ln.Addr().String(), grpc.WithInsecure())
 	if err != nil {
 		fmt.Fprint(os.Stderr, err.Error())
 		os.Exit(1)
@@ -64,6 +63,4 @@ func main() {
 		fmt.Fprint(os.Stderr, err.Error())
 		os.Exit(1)
 	}
-
-	grpcServer.Stop()
 }
